@@ -36,26 +36,51 @@ var backupCmd = &cobra.Command{
 		}
 
 		for {
-			if err := filepath.Walk(projectPath, func(path string, info os.FileInfo, err error) error {
+			backedUpFiles := map[string]os.FileInfo{}
+			projectFiles := map[string]os.FileInfo{}
+
+			filepath.Walk(backupPath, func(path string, info os.FileInfo, err error) error {
+				if info.IsDir() && info.Name() == ".git" {
+					return filepath.SkipDir
+				}
+				relative, _ := filepath.Rel(backupPath, path)
+				backedUpFiles[relative] = info
+				return nil
+			})
+			filepath.Walk(projectPath, func(path string, info os.FileInfo, err error) error {
 				if info.IsDir() && contains(info.Name(), ignorePaths) {
 					return filepath.SkipDir
 				}
 				relative, _ := filepath.Rel(projectPath, path)
+				projectFiles[relative] = info
+				return nil
+			})
+
+			for relative, info := range projectFiles {
 				dest := filepath.Join(backupPath, relative)
-				if info.IsDir() && !fileExists(dest) {
-					if err := os.MkdirAll(dest, 0755); err != nil {
-						panic(err)
+				if info.IsDir() {
+					if !fileExists(dest) {
+						if err := os.MkdirAll(dest, 0755); err != nil {
+							panic(err)
+						}
 					}
-					return nil
+					continue
 				}
 				if info.ModTime().After(lastUpdated) {
-					if err := copy(path, dest); err != nil {
+					from := filepath.Join(projectPath, relative)
+					to := filepath.Join(backupPath, relative)
+					if err := copy(from, to); err != nil {
 						panic(err)
 					}
 				}
-				return nil
-			}); err != nil {
-				panic(err)
+			}
+
+			for relative := range backedUpFiles {
+				if _, ok := projectFiles[relative]; !ok {
+					if err := os.RemoveAll(filepath.Join(backupPath, relative)); err != nil {
+						panic(err)
+					}
+				}
 			}
 			lastUpdated = time.Now()
 			c := exec.Command("git", "add", "--all")
