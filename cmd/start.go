@@ -55,6 +55,6 @@ func init() {
 	home, _ := os.UserHomeDir()
 	startCmd.Flags().String("name", path.Base(dir), "the name of the backup project")
 	startCmd.Flags().String("path", path.Join(home, ".backups"), "the path to the backup project")
-	startCmd.Flags().StringArray("ignore_path", []string{"node_modules", "dist", "build"}, "folders to ignore")
+	startCmd.Flags().StringArray("ignore_path", []string{"node_modules", "dist", "build", ".git"}, "folders to ignore")
 	rootCmd.AddCommand(startCmd)
 }

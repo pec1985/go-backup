@@ -11,8 +11,7 @@ import (
 )
 
 var stopCmd = &cobra.Command{
-	Use:  "stop",
-	Args: cobra.ExactArgs(1),
+	Use: "stop",
 	Run: func(cmd *cobra.Command, args []string) {
 		projectName, _ := cmd.Flags().GetString("name")
 		backupBasePath, _ := cmd.Flags().GetString("path")
