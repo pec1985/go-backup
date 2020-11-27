@@ -11,17 +11,18 @@ import (
 )
 
 var stopCmd = &cobra.Command{
-	Use:  "stop [name]",
+	Use:  "stop",
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		projectName, _ := cmd.Flags().GetString("name")
 		backupBasePath, _ := cmd.Flags().GetString("path")
 		var info backupInfo
 		var err error
-		if info, err = projectInfo(backupBasePath, args[0]); err != nil {
+		if info, err = projectInfo(backupBasePath, projectName); err != nil {
 			panic(err)
 		}
 		if info.Pid != 0 {
-			fmt.Println("killing", args[0])
+			fmt.Println("killing", projectName)
 			if err := syscall.Kill(info.Pid, syscall.SIGKILL); err != nil {
 				panic(err)
 			}
@@ -33,7 +34,9 @@ var stopCmd = &cobra.Command{
 }
 
 func init() {
+	dir, _ := os.Getwd()
 	home, _ := os.UserHomeDir()
+	stopCmd.Flags().String("name", path.Base(dir), "the name of the backup project")
 	stopCmd.Flags().String("path", path.Join(home, ".backups"), "the path to the backup project")
 	rootCmd.AddCommand(stopCmd)
 }

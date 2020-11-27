@@ -28,7 +28,7 @@ var startCmd = &cobra.Command{
 			p, _ := os.FindProcess(info.Pid)
 			w, _ := p.Wait()
 			if w != nil {
-				fmt.Println("theere already a backup running")
+				fmt.Println("there is already a backup running")
 				os.Exit(1)
 			}
 		}
@@ -39,7 +39,6 @@ var startCmd = &cobra.Command{
 			backupArgs = append(backupArgs, "--ignore_path", ignore)
 		}
 		backupArgs = append(backupArgs, "--last_updated", info.LastUpdated.Format(time.RFC3339))
-		fmt.Println(backupArgs)
 		backup := exec.Command(os.Args[0], backupArgs...)
 		if err := backup.Start(); err != nil {
 			panic(err)
