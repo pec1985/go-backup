@@ -11,26 +11,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func contains(what string, in []string) bool {
-	for _, i := range in {
-		if what == i {
-			return true
-		}
-	}
-	return false
-}
-
 var backupCmd = &cobra.Command{
 	Use:  "backup <backup_path, project_path>",
 	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		backupPath, _ := filepath.Abs(args[0])
 		projectPath, _ := filepath.Abs(args[1])
-		ignorePaths, _ := cmd.Flags().GetStringArray("ignore_paths")
-		lastUpdtedString, _ := cmd.Flags().GetString("last_updated")
+		ignorePaths, _ := cmd.Flags().GetStringArray("ignore_path")
+		lastUpdatedString, _ := cmd.Flags().GetString("last_updated")
 		var lastUpdated time.Time
-		if lastUpdtedString != "" {
-			lastUpdated, _ = time.Parse(time.RFC3339, lastUpdtedString)
+		if lastUpdatedString != "" {
+			lastUpdated, _ = time.Parse(time.RFC3339, lastUpdatedString)
 		}
 
 		if !fileExists(backupPath) {
@@ -92,7 +83,8 @@ func copy(sourceFile, destinationFile string) error {
 }
 
 func init() {
-	backupCmd.Flags().StringArray("ignore_paths", []string{}, "")
+	backupCmd.Flags().StringArray("ignore_path", []string{}, "")
 	backupCmd.Flags().String("last_updated", "", "")
+	backupCmd.Hidden = true
 	rootCmd.AddCommand(backupCmd)
 }
