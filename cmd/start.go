@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"strings"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -24,12 +25,12 @@ var startCmd = &cobra.Command{
 		if err != nil {
 			panic(err)
 		}
+
 		if info.Pid > 0 {
-			p, _ := os.FindProcess(info.Pid)
-			w, _ := p.Wait()
-			if w != nil {
-				fmt.Println("there is already a backup running")
-				os.Exit(1)
+			b, _ := exec.Command("ps", fmt.Sprint(info.Pid)).Output()
+			if strings.Contains(string(b), fmt.Sprint(info.Pid)) {
+				fmt.Println("backup already running")
+				return
 			}
 		}
 

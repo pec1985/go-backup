@@ -22,12 +22,10 @@ var stopCmd = &cobra.Command{
 		}
 		if info.Pid != 0 {
 			fmt.Println("killing", projectName)
-			if err := syscall.Kill(info.Pid, syscall.SIGKILL); err != nil {
-				panic(err)
-			}
+			syscall.Kill(info.Pid, syscall.SIGKILL)
 			info.Pid = 0
 			info.LastUpdated = time.Now()
-			saveProjectInfo(backupBasePath, args[0], info)
+			saveProjectInfo(backupBasePath, projectName, info)
 		}
 	},
 }
