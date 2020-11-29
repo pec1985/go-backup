@@ -36,7 +36,7 @@ go-backup start --path {backup root dir} --name {project name} --ignore_path  {f
 Default values
 
 ```
---path ~/backups
+--path ~/.backups
 --name {current folder}
 --ignore_path node_modules
 --ignore_path dist
