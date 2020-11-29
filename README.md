@@ -17,6 +17,13 @@ To stop
 go-backup stop
 ```
 
+To restore
+
+```
+go-backup restore {project_name}
+```
+
+
 #### Optional parameters
 
 You can override the default values
@@ -37,5 +44,5 @@ Default values
 ```
 
 
-Pedro Enrique
+Pedro Enrique  
 MIT
