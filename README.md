@@ -1,26 +1,34 @@
 ### go-backup
 
-A simple deamon that will back up your project every two minutes using Git
+A simple daemon that will back up your project every two minutes using Git
+
+#### Installation:
+
+```
+go get
+go install -o backup
+mv backup /usr/local/bin
+```
 
 #### Usage:
 
-To start backing up (after building go-backup and placing it in your PATH)
+To start backing up
 
 ```
 cd {your project}
-go-backup start
+backup start
 ```
 
 To stop
 
 ```
-go-backup stop
+backup stop
 ```
 
 To restore
 
 ```
-go-backup restore {project_name}
+backup restore {project_name}
 ```
 
 
@@ -30,7 +38,7 @@ You can override the default values
 
 ```
 cd {project}
-go-backup start --path {backup root dir} --name {project name} --ignore_path  {folder to ignore}
+backup start --path {backup root dir} --name {project name} --ignore_path  {folder to ignore}
 ```
 
 Default values
